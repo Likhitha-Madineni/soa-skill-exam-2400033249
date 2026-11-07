@@ -1,0 +1,100 @@
+package com.klef.soa.controller;
+
+import java.util.List;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import org.springframework.web.bind.annotation.RestController;
+
+import com.klef.soa.entity.Clinic;
+
+import com.klef.soa.service.ClinicService;
+
+
+@RestController
+@RequestMapping("/clinic")
+public class ClinicController {
+@Autowired
+private ClinicService service;
+
+
+@GetMapping("/")
+public String home()
+{
+	   return "User Service Project";
+}  
+
+
+
+
+@PostMapping("/insert")
+public ResponseEntity <Clinic>addclinic( @RequestBody Clinic c) {
+Clinic clinic=service.addClinic(c);
+return ResponseEntity.status(201).body(clinic);
+}
+
+
+
+@GetMapping("/displayall")
+public   ResponseEntity <List<Clinic>> displayallclinics(){
+	List<Clinic> clinic=service.displayAll();	
+	return  ResponseEntity.status(200).body(clinic);
+	 
+}
+@PutMapping("/update")
+public  ResponseEntity<?> updateclinic(@RequestBody Clinic clinic ) {
+		Clinic c=service.updateClinic(clinic);
+		if(c!=null) {
+			
+			return ResponseEntity.ok(c);
+			
+		}else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Clinic id is not found");
+		}
+}
+@DeleteMapping("/delete/{id}")
+public ResponseEntity<String> deleteclinicbyid( @PathVariable Long id) {
+	
+	String msg=service.deleteClinicById(id);
+	return ResponseEntity.ok(msg);
+	
+}
+
+
+@GetMapping("/display/{id}")
+public ResponseEntity<?> displayclinicbyid(@PathVariable 	Long  id) {
+	
+	Clinic clinic=service.displayById(id);
+	
+	if(clinic!=null) {
+		return ResponseEntity.status(200).body(clinic);
+	}else {
+		return ResponseEntity.status(404).body("Clinic Id Not Found");
+	}
+}
+
+@GetMapping("/displaybyname/{name}")
+ public ResponseEntity<List<Clinic>> displaybyname(@PathVariable String name){
+	List<Clinic>clinics=service.displayclinicByName(name);
+	return ResponseEntity.status(200).body(clinics);
+			}
+
+@GetMapping("/displaybytype")
+public ResponseEntity<List<Clinic>> displaybytype(@RequestParam String type){
+	
+	List<Clinic> clinics=service.displayclinicByType(type);
+	return ResponseEntity.status(200).body(clinics);
+}
+}
