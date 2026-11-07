@@ -29,7 +29,7 @@ services:
       dockerfile: Dockerfile
     container_name: clinic-service
     ports:
-      - "3249:3247"
+      - "3249:4001"
     depends_on:
       postgresdb:
         condition: service_healthy
